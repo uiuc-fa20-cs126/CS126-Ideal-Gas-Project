@@ -24,14 +24,13 @@ class IdealGasApp : public ci::app::App {
   void mouseDown(ci::app::MouseEvent event) override;
   void mouseUp(ci::app::MouseEvent event) override;
 
-        void mouseDrag(ci::app::MouseEvent event) override;
+  void mouseDrag(ci::app::MouseEvent event) override;
 
-        void keyDown(ci::app::KeyEvent event) override;
+  void keyDown(ci::app::KeyEvent event) override;
 
-
-    private:
+ private:
   std::vector<Particle> particles_;
-    };
+};
 
 }  // namespace idealgas
 #endif //IDEAL_GAS_PFISTERFACTOR_IDEALGASAPP_H

@@ -27,11 +27,13 @@ void Particle::update(vector<Particle> const &particles) {
   bool moving_towards_right = isMovingTowards(right_wall);
 
   position += velocity;
-  if ((moving_towards_left && position.x <= left_wall.x) || (moving_towards_right && position.x >= right_wall.x)) {
+  if ((moving_towards_left && position.x - radius_ <= left_wall.x)
+      || (moving_towards_right && position.x + radius_ >= right_wall.x)) {
     position.x = glm::clamp(position.x, left_wall.x, right_wall.x);
     velocity.x = -velocity.x;
   }
-  if ((moving_towards_top && position.y <= top_wall.y) || (moving_towards_bottom && position.y >= bottom_wall.y)) {
+  if ((moving_towards_top && position.y - radius_ <= top_wall.y)
+      || (moving_towards_bottom && position.y + radius_ >= bottom_wall.y)) {
     position.y = glm::clamp(position.y, top_wall.y, bottom_wall.y);
     velocity.y = -velocity.y;
   }

@@ -11,7 +11,7 @@ using glm::vec2;
 
 namespace idealgas {
 IdealGasApp::IdealGasApp() {
-  particles_.push_back(Particle(5, vec2(10, 10), vec2(4, 4)));
+  particles_.push_back(Particle(50, vec2(51, 51), vec2(4, 4)));
 }
 
 void IdealGasApp::update() {
