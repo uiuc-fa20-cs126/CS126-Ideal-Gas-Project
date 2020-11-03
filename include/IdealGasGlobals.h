@@ -5,6 +5,6 @@
 #ifndef IDEAL_GAS_INCLUDE_IDEALGASGLOBALS_H_
 #define IDEAL_GAS_INCLUDE_IDEALGASGLOBALS_H_
 namespace idealgas {
-const cinder::Rectf PHYSICS_BOUNDS = cinder::Rectf(0, 0, 400, 400);
+extern cinder::Rectf PHYSICS_BOUNDS;
 } // namespace idealgas
 #endif //IDEAL_GAS_INCLUDE_IDEALGASGLOBALS_H_

@@ -27,9 +27,11 @@ class IdealGasApp : public ci::app::App {
   void mouseDrag(ci::app::MouseEvent event) override;
 
   void keyDown(ci::app::KeyEvent event) override;
+  void keyUp(ci::app::KeyEvent event) override;
 
  private:
   std::vector<Particle> particles_;
+  bool isShiftDown;
 };
 
 }  // namespace idealgas

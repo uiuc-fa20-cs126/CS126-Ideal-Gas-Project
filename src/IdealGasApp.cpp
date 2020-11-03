@@ -11,6 +11,7 @@ using glm::vec2;
 
 namespace idealgas {
 IdealGasApp::IdealGasApp() {
+  isShiftDown = false;
   particles_.push_back(Particle(25, vec2(51, 51), vec2(4, 4)));
   particles_.push_back(Particle(25, vec2(100, 100), vec2(4, 4)));
   particles_.push_back(Particle(5, vec2(200, 100), vec2(4, 4)));
@@ -25,6 +26,7 @@ void IdealGasApp::update() {
 
 void IdealGasApp::draw() {
   ci::gl::clear(ColorA::white());
+  ci::gl::drawStrokedRect(PHYSICS_BOUNDS, 2.0f);
   for (Particle &particle : particles_) {
     particle.draw();
   }
@@ -32,17 +34,28 @@ void IdealGasApp::draw() {
 
 void IdealGasApp::mouseDown(ci::app::MouseEvent event) {
   AppBase::mouseDown(event);
+  if (isShiftDown) {
+    PHYSICS_BOUNDS.moveULTo(event.getPos() - ivec2(PHYSICS_BOUNDS.getWidth() / 2, PHYSICS_BOUNDS.getHeight() / 2));
+  }
 }
 
 void IdealGasApp::mouseDrag(ci::app::MouseEvent event) {
-  AppBase::mouseDrag(event);
+  if (isShiftDown) {
+    PHYSICS_BOUNDS.moveULTo(event.getPos() - ivec2(PHYSICS_BOUNDS.getWidth() / 2, PHYSICS_BOUNDS.getHeight() / 2));
+  }
 }
 
 void IdealGasApp::keyDown(ci::app::KeyEvent event) {
-  AppBase::keyDown(event);
+  isShiftDown = event.isShiftDown();
 }
+
+void IdealGasApp::keyUp(ci::app::KeyEvent event) {
+  isShiftDown = event.isShiftDown();
+}
+
 void IdealGasApp::mouseUp(ci::app::MouseEvent event) {
   if (!event.isLeft()) return;
+  if (isShiftDown) return;
   // Randomly perturb the particles velocities
   for (Particle &p : particles_) {
     // Add a random x component and y component, both in the range [-2,2]

@@ -11,15 +11,15 @@ namespace idealgas {
 
 Particle::Particle(float radius, glm::vec2 const &position, glm::vec2 const &velocity) {
   radius_ = radius;
-  this->position = position;
+  this->position = glm::clamp(position, vec2(0, 0), vec2(PHYSICS_BOUNDS.getWidth(), PHYSICS_BOUNDS.getHeight()));
   this->velocity = velocity;
 }
 
 void Particle::update(vector<Particle> &particles) {
-  vec2 top_wall = vec2(position.x, PHYSICS_BOUNDS.getY1());
-  vec2 bottom_wall = vec2(position.x, PHYSICS_BOUNDS.getY2());
-  vec2 left_wall = vec2(PHYSICS_BOUNDS.getX1(), position.y);
-  vec2 right_wall = vec2(PHYSICS_BOUNDS.getX2(), position.y);
+  vec2 top_wall = vec2(position.x, 0);
+  vec2 bottom_wall = vec2(position.x, PHYSICS_BOUNDS.getHeight());
+  vec2 left_wall = vec2(0, position.y);
+  vec2 right_wall = vec2(PHYSICS_BOUNDS.getWidth(), position.y);
   // Compute if ball is moving towards a wall *before* updating the position
   bool moving_towards_top = isMovingTowards(top_wall);
   bool moving_towards_bottom = isMovingTowards(bottom_wall);
@@ -57,7 +57,8 @@ void Particle::update(vector<Particle> &particles) {
 }
 void Particle::draw() const {
   ci::gl::color(ci::ColorA::black());
-  ci::gl::drawSolidCircle(position, radius_);
+  vec2 upper_left = PHYSICS_BOUNDS.getUpperLeft();
+  ci::gl::drawSolidCircle(upper_left + position, radius_);
 }
 bool Particle::isMovingTowards(glm::vec2 const &pos, glm::vec2 const &vel) const {
   return cinder::dot((velocity - vel), (position - pos)) < 0;
