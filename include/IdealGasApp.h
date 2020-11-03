@@ -8,27 +8,29 @@
 #include <cinder/app/App.h>
 #include <cinder/app/RendererGl.h>
 #include <cinder/gl/gl.h>
+#include <vector>
+#include <Particle.h>
 
 namespace idealgas {
-    class IdealGasApp : public ci::app::App {
-    public:
-        IdealGasApp();
 
-        void draw() override;
+class IdealGasApp : public ci::app::App {
+ public:
+  IdealGasApp();
 
-        void update() override;
+  void draw() override;
 
-        void mouseDown(ci::app::MouseEvent event) override;
+  void update() override;
+
+  void mouseDown(ci::app::MouseEvent event) override;
+  void mouseUp(ci::app::MouseEvent event) override;
 
         void mouseDrag(ci::app::MouseEvent event) override;
 
         void keyDown(ci::app::KeyEvent event) override;
 
-        const double kWindowSize = 600;
-        const double kMargin = 100;
-        const size_t kImageDimension = 28;
 
     private:
+  std::vector<Particle> particles_;
     };
 
 }  // namespace idealgas
