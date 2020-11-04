@@ -12,6 +12,7 @@ using glm::vec2;
 namespace idealgas {
 IdealGasApp::IdealGasApp() {
   isShiftDown = false;
+  Particle::SetGlobalPhysicsBounds(PARTICLE_WINDOW_RECT);
   particles_.push_back(Particle(25, vec2(51, 51), vec2(4, 4)));
   particles_.push_back(Particle(25, vec2(100, 100), vec2(4, 4)));
   particles_.push_back(Particle(5, vec2(200, 100), vec2(4, 4)));
@@ -26,7 +27,7 @@ void IdealGasApp::update() {
 
 void IdealGasApp::draw() {
   ci::gl::clear(ColorA::white());
-  ci::gl::drawStrokedRect(PHYSICS_BOUNDS, 2.0f);
+  ci::gl::drawStrokedRect(PARTICLE_WINDOW_RECT, 2.0f);
   for (Particle &particle : particles_) {
     particle.draw();
   }
@@ -35,13 +36,17 @@ void IdealGasApp::draw() {
 void IdealGasApp::mouseDown(ci::app::MouseEvent event) {
   AppBase::mouseDown(event);
   if (isShiftDown) {
-    PHYSICS_BOUNDS.moveULTo(event.getPos() - ivec2(PHYSICS_BOUNDS.getWidth() / 2, PHYSICS_BOUNDS.getHeight() / 2));
+    PARTICLE_WINDOW_RECT.moveULTo(
+        event.getPos() - ivec2(PARTICLE_WINDOW_RECT.getWidth() / 2, PARTICLE_WINDOW_RECT.getHeight() / 2));
+    Particle::SetGlobalPhysicsBounds(PARTICLE_WINDOW_RECT);
   }
 }
 
 void IdealGasApp::mouseDrag(ci::app::MouseEvent event) {
   if (isShiftDown) {
-    PHYSICS_BOUNDS.moveULTo(event.getPos() - ivec2(PHYSICS_BOUNDS.getWidth() / 2, PHYSICS_BOUNDS.getHeight() / 2));
+    PARTICLE_WINDOW_RECT.moveULTo(
+        event.getPos() - ivec2(PARTICLE_WINDOW_RECT.getWidth() / 2, PARTICLE_WINDOW_RECT.getHeight() / 2));
+    Particle::SetGlobalPhysicsBounds(PARTICLE_WINDOW_RECT);
   }
 }
 

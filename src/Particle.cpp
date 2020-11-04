@@ -9,34 +9,28 @@ using glm::vec2;
 
 namespace idealgas {
 
+cinder::Rectf Particle::physics_bounds = cinder::Rectf(0, 0, 0, 0);
 Particle::Particle(float radius, glm::vec2 const &position, glm::vec2 const &velocity) {
   radius_ = radius;
-  this->position = glm::clamp(position, vec2(0, 0), vec2(PHYSICS_BOUNDS.getWidth(), PHYSICS_BOUNDS.getHeight()));
+  this->position = glm::clamp(position, vec2(0, 0), vec2(physics_bounds.getWidth(), physics_bounds.getHeight()));
   this->velocity = velocity;
 }
 
 void Particle::update(vector<Particle> &particles) {
-  vec2 top_wall = vec2(position.x, 0);
-  vec2 bottom_wall = vec2(position.x, PHYSICS_BOUNDS.getHeight());
-  vec2 left_wall = vec2(0, position.y);
-  vec2 right_wall = vec2(PHYSICS_BOUNDS.getWidth(), position.y);
-  // Compute if ball is moving towards a wall *before* updating the position
-  bool moving_towards_top = isMovingTowards(top_wall);
-  bool moving_towards_bottom = isMovingTowards(bottom_wall);
-  bool moving_towards_left = isMovingTowards(left_wall);
-  bool moving_towards_right = isMovingTowards(right_wall);
-
   position += velocity;
+  vec2 top_wall = vec2(position.x, 0);
+  vec2 bottom_wall = vec2(position.x, physics_bounds.getHeight());
+  vec2 left_wall = vec2(0, position.y);
+  vec2 right_wall = vec2(physics_bounds.getWidth(), position.y);
+
   // Calculate collision between walls
-  if ((moving_towards_left && position.x - radius_ <= left_wall.x)
-      || (moving_towards_right && position.x + radius_ >= right_wall.x)) {
-    position.x = glm::clamp(position.x, left_wall.x, right_wall.x);
-    velocity.x = -velocity.x;
+  if (position.x - radius_ <= left_wall.x || position.x + radius_ >= right_wall.x) {
+    position.x = glm::clamp(position.x, left_wall.x + radius_, right_wall.x - radius_);
+    if (isMovingTowards(left_wall) || isMovingTowards(right_wall)) velocity.x = -velocity.x;
   }
-  if ((moving_towards_top && position.y - radius_ <= top_wall.y)
-      || (moving_towards_bottom && position.y + radius_ >= bottom_wall.y)) {
-    position.y = glm::clamp(position.y, top_wall.y, bottom_wall.y);
-    velocity.y = -velocity.y;
+  if (position.y - radius_ <= top_wall.y || position.y + radius_ >= bottom_wall.y) {
+    position.y = glm::clamp(position.y, top_wall.y + radius_, bottom_wall.y - radius_);
+    if (isMovingTowards(top_wall) || isMovingTowards(bottom_wall)) velocity.y = -velocity.y;
   }
 
   // Calculate collision between other particles
@@ -57,7 +51,7 @@ void Particle::update(vector<Particle> &particles) {
 }
 void Particle::draw() const {
   ci::gl::color(ci::ColorA::black());
-  vec2 upper_left = PHYSICS_BOUNDS.getUpperLeft();
+  vec2 upper_left = physics_bounds.getUpperLeft();
   ci::gl::drawSolidCircle(upper_left + position, radius_);
 }
 bool Particle::isMovingTowards(glm::vec2 const &pos, glm::vec2 const &vel) const {
