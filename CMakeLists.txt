@@ -52,7 +52,7 @@ get_filename_component(APP_PATH "${CMAKE_CURRENT_SOURCE_DIR}/" ABSOLUTE)
 
 include("${CINDER_PATH}/proj/cmake/modules/cinderMakeApp.cmake")
 
-list(APPEND CORE_SOURCE_FILES src/Particle.cpp)
+list(APPEND CORE_SOURCE_FILES src/Particle.cpp src/Histogram.cpp src/ParticleSimulation.cpp)
 list(APPEND SOURCE_FILES ${CORE_SOURCE_FILES} src/IdealGasApp.cpp)
 
 list(APPEND TEST_FILES tests/TestParticle.cpp)

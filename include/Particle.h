@@ -6,7 +6,6 @@
 #define IDEAL_GAS_PARTICLE_H
 
 #include <cinder/gl/gl.h>
-#include "IdealGasGlobals.h"
 
 namespace idealgas {
 /**
@@ -15,38 +14,45 @@ namespace idealgas {
 class Particle {
  private:
   float radius_;
-  /**
-   * The "walls" of the physics simulation, particles will collide off of the edges of this rectangle
-   */
-  static cinder::Rectf physics_bounds;
+  float mass_;
+ private:
+  ci::ColorA color_;
  public:
   glm::vec2 position;
   glm::vec2 velocity;
-  Particle(float radius = 1, glm::vec2 const &position = glm::vec2(0, 0), glm::vec2 const &velocity = glm::vec2(0, 0));
+  Particle(glm::vec2 const &position = glm::vec2(0, 0),
+           glm::vec2 const &velocity = glm::vec2(0, 0),
+           float radius = 1,
+           float mass = 1,
+           ci::ColorA const &color = ci::ColorA::black());
+  float GetMass() const {
+    return mass_;
+  }
+  cinder::ColorA const &GetColor() const {
+    return color_;
+  }
   /**
    * Whether or not this particle is moving towards a point with a given velocity, or away
    * @param pos the position to check
    * @param vel the velocity to check
    * @return true if this particle is moving towards, false otherwise
    */
-  bool isMovingTowards(glm::vec2 const &pos, glm::vec2 const &vel = glm::vec2(0, 0)) const;
+  bool IsMovingTowards(glm::vec2 const &pos, glm::vec2 const &vel = glm::vec2(0, 0)) const;
   /**
    * Whether or not two particles are moving towards each other
    * @param other the position to check
    * @return true if these particles are moving towards each other, false otherwise
    */
-  bool isMovingTowards(Particle const &other) const { return isMovingTowards(other.position, other.velocity); }
-  /**
-   * Updates the particle's position according to its velocity and resolves collisions between other particles
-   * @param particles a list of particles to check collisions with (can include self)
-   */
-  void update(std::vector<Particle> &particles);
-  /**
-   * Draws the particle to the screen, relative to the physics_bounds
-   */
-  void draw() const;
+  bool IsMovingTowards(Particle const &other) const { return IsMovingTowards(other.position, other.velocity); }
 
-  static void SetGlobalPhysicsBounds(cinder::Rectf const &new_bounds) { physics_bounds = new_bounds; }
+  void ResolveWallCollisions(ci::Rectf const &particle_bounds);
+  void ResolveParticleCollision(Particle &other);
+  /**
+   * Draws the particle to the screen
+   * @param relative_to a position to draw the particle relative to
+   */
+  void Draw(glm::vec2 const &relative_to = glm::vec2(0, 0)) const;
+
   bool operator==(Particle const &other) const;
 
 };
