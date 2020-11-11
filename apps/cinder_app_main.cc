@@ -1,7 +1,5 @@
 #include <IdealGasApp.h>
-#include <IdealGasGlobals.h>
 using idealgas::IdealGasApp;
-cinder::Rectf idealgas::PARTICLE_WINDOW_RECT = cinder::Rectf(100, 100, 500, 500);
 
 void prepareSettings(IdealGasApp::Settings *settings) {
   settings->setTitle("Ideal Gas App");

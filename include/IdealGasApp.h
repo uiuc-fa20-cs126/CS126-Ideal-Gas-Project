@@ -10,6 +10,8 @@
 #include <cinder/gl/gl.h>
 #include <vector>
 #include <Particle.h>
+#include <Histogram.h>
+#include <ParticleSimulation.h>
 
 namespace idealgas {
 
@@ -64,14 +66,28 @@ class IdealGasApp : public ci::app::App {
   void keyUp(ci::app::KeyEvent event) override;
 
  private:
+  const float HEAVY_PARTICLE_MASS = 200;
+  const float MEDIUM_PARTICLE_MASS = 100;
+  const float LIGHT_PARTICLE_MASS = 50;
+  const size_t PARTICLE_COUNT_OF_EACH_TYPE = 50;
+  ci::Rectf particle_window_ = ci::Rectf(200, 100, 600, 500);
+  ci::Rectf heavy_histogram_ = ci::Rectf(100, 50, 300, 150);
+  ci::Rectf medium_histogram_ = ci::Rectf(100, 250, 300, 350);
+  ci::Rectf light_histogram_ = ci::Rectf(100, 450, 300, 550);
   /**
    * Our list of particles in the simulation
    */
-  std::vector<Particle> particles_;
+  ParticleSimulation simulation_ = ParticleSimulation(cinder::Rectf());
+  /**
+   * Our list of histograms displayed with the simulation
+   */
+  std::vector<Histogram> histograms_;
   /**
    * Whether or not the shift key is down, used as a keybind to move the physics window around
    */
   bool isShiftDown;
+
+  std::vector<double> GetSpeedsOfParticlesWithMass(float mass);
 };
 
 }  // namespace idealgas
