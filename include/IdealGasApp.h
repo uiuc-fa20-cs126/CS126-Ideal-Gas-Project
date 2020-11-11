@@ -77,7 +77,7 @@ class IdealGasApp : public ci::app::App {
   /**
    * Physics particle window within the app
    */
-  ci::Rectf particle_window_ = ci::Rectf(350, 100, 750, 500);
+  ci::Rectf particle_window_ = ci::Rectf(375, 150, 775, 550);
   /**
    * Heavy histogram window within the app
    */

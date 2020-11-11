@@ -55,7 +55,7 @@ void Histogram::DrawAxis() {
 
   // Draw the y-axis ticks
   drawStringRight("0", dimensions_.getLowerLeft() - vec2(5, 0), ColorA::black());
-  drawStringRight(DoubleToString(y_axis_max_, 1), dimensions_.getUpperLeft() - vec2(5, 0), ColorA::black());
+  drawStringRight(DoubleToString(y_axis_max_, 1) + "+", dimensions_.getUpperLeft() - vec2(5, 0), ColorA::black());
   drawStringRight(DoubleToString(y_axis_max_ / 2, 1),
                   dimensions_.getUpperLeft() + vec2(-5, dimensions_.getHeight() / 2),
                   ColorA::black());
@@ -68,7 +68,6 @@ void Histogram::DrawAxis() {
 }
 void Histogram::DrawData() {
   // Gray color
-  color(ColorA::hex(0x808080));
   double width = dimensions_.getWidth();
   double height = dimensions_.getHeight();
   // Create a map to store the bin index, and the count of data points that falls within that bins range
@@ -84,7 +83,10 @@ void Histogram::DrawData() {
     size_t frequency = (bins_to_counts_.count(bin) != 0) ? bins_to_counts_[bin] : 0;
     vec2 start_pos = vec2(dimensions_.getLowerLeft().x + bin * width / number_of_bins_, dimensions_.getLowerLeft().y);
     vec2 end_pos = vec2(dimensions_.getLowerLeft().x + (bin + 1) * width / number_of_bins_,
-                        dimensions_.getLowerLeft().y - frequency * height / y_axis_max_);
+                        std::max((double) dimensions_.getUpperLeft().y,
+                                 dimensions_.getLowerLeft().y - frequency * height / y_axis_max_));
+    color(ColorA::hex(0x808080));
+    if (frequency > y_axis_max_) color(ColorA::hex(0xFA8072));
     gl::drawSolidRect(Rectf(start_pos, end_pos));
   }
 }
