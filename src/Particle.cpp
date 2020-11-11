@@ -25,7 +25,9 @@ bool Particle::IsMovingTowards(glm::vec2 const &pos, glm::vec2 const &vel) const
   return cinder::dot((velocity - vel), (position - pos)) < 0;
 }
 bool Particle::operator==(Particle const &other) const {
-  return radius_ == other.radius_ && position == other.position && velocity == other.velocity;
+  if (fabs(radius_ - other.radius_) > std::numeric_limits<float>::epsilon()) return false;
+  if (fabs(mass_ - other.mass_) > std::numeric_limits<float>::epsilon()) return false;
+  return position == other.position && velocity == other.velocity && color_ == other.color_;
 }
 void Particle::ResolveWallCollisions(ci::Rectf const &particle_bounds) {
   vec2 top_wall = vec2(position.x, 0);

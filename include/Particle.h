@@ -15,7 +15,6 @@ class Particle {
  private:
   float radius_;
   float mass_;
- private:
   ci::ColorA color_;
  public:
   glm::vec2 position;
@@ -45,7 +44,16 @@ class Particle {
    */
   bool IsMovingTowards(Particle const &other) const { return IsMovingTowards(other.position, other.velocity); }
 
+  /**
+   * Resolves any collisions against the 4 walls of the passed in bounds
+   * @param particle_bounds the boundaries to check collisions against
+   */
   void ResolveWallCollisions(ci::Rectf const &particle_bounds);
+  /**
+   * Resolves a collision with another particle, if needed
+   * By calling this, the other particle's velocity will also be changed if there is a collision
+   * @param other another particle to resolve a collision with
+   */
   void ResolveParticleCollision(Particle &other);
   /**
    * Draws the particle to the screen
@@ -54,6 +62,7 @@ class Particle {
   void Draw(glm::vec2 const &relative_to = glm::vec2(0, 0)) const;
 
   bool operator==(Particle const &other) const;
+  bool operator!=(Particle const &other) const { return !(*this == other); }
 
 };
 } // namespace idealgas

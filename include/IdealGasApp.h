@@ -69,13 +69,29 @@ class IdealGasApp : public ci::app::App {
   const float HEAVY_PARTICLE_MASS = 200;
   const float MEDIUM_PARTICLE_MASS = 100;
   const float LIGHT_PARTICLE_MASS = 50;
-  const size_t PARTICLE_COUNT_OF_EACH_TYPE = 50;
-  ci::Rectf particle_window_ = ci::Rectf(200, 100, 600, 500);
-  ci::Rectf heavy_histogram_ = ci::Rectf(100, 50, 300, 150);
-  ci::Rectf medium_histogram_ = ci::Rectf(100, 250, 300, 350);
-  ci::Rectf light_histogram_ = ci::Rectf(100, 450, 300, 550);
   /**
-   * Our list of particles in the simulation
+   * Within the IdealGasApp constructor, each particle type (heavy, medium, light) is spawned PARTICLE_COUNT_OF_EACH_TYPE number of times
+   * The total number of particles is then PARTICLE_COUNT_OF_EACH_TYPE * 3
+   */
+  const size_t PARTICLE_COUNT_OF_EACH_TYPE = 50;
+  /**
+   * Physics particle window within the app
+   */
+  ci::Rectf particle_window_ = ci::Rectf(350, 100, 750, 500);
+  /**
+   * Heavy histogram window within the app
+   */
+  ci::Rectf heavy_histogram_window_ = ci::Rectf(100, 50, 300, 150);
+  /**
+   * Medium histogram window within the app
+   */
+  ci::Rectf medium_histogram_window_ = ci::Rectf(100, 250, 300, 350);
+  /**
+   * Light histogram window within the app
+   */
+  ci::Rectf light_histogram_window_ = ci::Rectf(100, 450, 300, 550);
+  /**
+   * Our particle simulation handler
    */
   ParticleSimulation simulation_ = ParticleSimulation(cinder::Rectf());
   /**
@@ -86,7 +102,11 @@ class IdealGasApp : public ci::app::App {
    * Whether or not the shift key is down, used as a keybind to move the physics window around
    */
   bool isShiftDown;
-
+  /**
+   * Internal helper method to grab the speeds of particles with a certain mass
+   * @param mass the mass to check against
+   * @return a vector of speeds for particles with the passed in mass
+   */
   std::vector<double> GetSpeedsOfParticlesWithMass(float mass);
 };
 

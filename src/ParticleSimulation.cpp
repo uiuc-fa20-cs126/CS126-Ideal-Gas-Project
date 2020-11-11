@@ -8,12 +8,11 @@ void ParticleSimulation::AddParticle(Particle const &p) {
   particles_.push_back(p);
 }
 void ParticleSimulation::Update() {
-  for (size_t p1_index = 0; p1_index < particles_.size(); p1_index++) {
-    Particle &p1 = particles_[p1_index];
+  for (auto &p1 : particles_) {
     p1.position += p1.velocity;
     p1.ResolveWallCollisions(particle_bounds_);
-    for (size_t p2_index = p1_index + 1; p2_index < particles_.size(); p2_index++) {
-      p1.ResolveParticleCollision(particles_[p2_index]);
+    for (auto &p2: particles_) {
+      if (p1 != p2) p1.ResolveParticleCollision(p2);
     }
   }
 }

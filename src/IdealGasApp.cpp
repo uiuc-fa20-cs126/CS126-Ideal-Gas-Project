@@ -12,13 +12,13 @@ namespace idealgas {
 IdealGasApp::IdealGasApp() {
   isShiftDown = false;
   simulation_ = ParticleSimulation(particle_window_);
-  histograms_.emplace_back(heavy_histogram_, "Heavy Particle Speeds", 10, 1, PARTICLE_COUNT_OF_EACH_TYPE / 3);
-  histograms_.emplace_back(medium_histogram_, "Medium Particle Speeds", 10, 1, PARTICLE_COUNT_OF_EACH_TYPE / 3);
-  histograms_.emplace_back(light_histogram_, "Light Particle Speeds", 10, 1, PARTICLE_COUNT_OF_EACH_TYPE / 3);
+  histograms_.emplace_back(heavy_histogram_window_, "Heavy Particle Speeds", 10, 1, PARTICLE_COUNT_OF_EACH_TYPE / 3);
+  histograms_.emplace_back(medium_histogram_window_, "Medium Particle Speeds", 10, 1, PARTICLE_COUNT_OF_EACH_TYPE / 3);
+  histograms_.emplace_back(light_histogram_window_, "Light Particle Speeds", 10, 1, PARTICLE_COUNT_OF_EACH_TYPE / 3);
   for (size_t i = 0; i < PARTICLE_COUNT_OF_EACH_TYPE; i++) {
     simulation_.AddParticle(Particle(vec2(51, 51), vec2(4, 4), 10, HEAVY_PARTICLE_MASS, ci::ColorA::hex(0xff0000)));
-    simulation_.AddParticle(Particle(vec2(51, 51), vec2(4, 4), 10, MEDIUM_PARTICLE_MASS, ci::ColorA::hex(0xffff00)));
-    simulation_.AddParticle(Particle(vec2(51, 51), vec2(4, 4), 10, LIGHT_PARTICLE_MASS, ci::ColorA::hex(0x00ff00)));
+    simulation_.AddParticle(Particle(vec2(51, 51), vec2(4, 4), 5, MEDIUM_PARTICLE_MASS, ci::ColorA::hex(0xffff00)));
+    simulation_.AddParticle(Particle(vec2(51, 51), vec2(4, 4), 2.5, LIGHT_PARTICLE_MASS, ci::ColorA::hex(0x00ff00)));
   }
 }
 

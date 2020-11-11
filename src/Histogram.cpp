@@ -29,7 +29,9 @@ void Histogram::DrawAxis() {
   color(ColorA::black());
   double width = dimensions_.getWidth();
   double height = dimensions_.getHeight();
+  // Draw the title of the graph
   drawStringCentered(title_, dimensions_.getCenter() - vec2(0, height / 2 + 40), ColorA::black());
+  // Create and draw the x and y axis with a desired thickness
   Rectf x_axis = Rectf(dimensions_.getLowerLeft().x,
                        dimensions_.getLowerLeft().y + AXIS_LINE_WIDTH,
                        dimensions_.getLowerRight().x,
@@ -40,43 +42,44 @@ void Histogram::DrawAxis() {
                        dimensions_.getUpperLeft().y);
   drawSolidRect(x_axis);
   drawSolidRect(y_axis);
+
+  // Draw the x-axis bins
   for (size_t bin = 0; bin <= number_of_bins_; bin++) {
     vec2 text_pos =
         vec2(dimensions_.getLowerLeft().x + bin * width / number_of_bins_, dimensions_.getLowerLeft().y + 10);
     std::string number = DoubleToString(bin * bin_width_, 1);
+    // The last bin value gets a + on the end of it to indicate any data over this bin's width will go here
     if (bin == number_of_bins_) number += "+";
-    pushModelMatrix();
-    translate(text_pos);
-    Rectf tick_mark = Rectf(0, -15, 2, -8);
-    drawSolidRect(tick_mark);
-    rotate(0.8);
-    drawString(number, vec2(0, 0), ColorA::black());
-    popModelMatrix();
+    DrawRotatedString(number, text_pos, X_AXIS_TICK_ROTATION_RADIANS);
   }
+
+  // Draw the y-axis ticks
   drawStringRight("0", dimensions_.getLowerLeft() - vec2(5, 0), ColorA::black());
   drawStringRight(DoubleToString(y_axis_max_, 1), dimensions_.getUpperLeft() - vec2(5, 0), ColorA::black());
   drawStringRight(DoubleToString(y_axis_max_ / 2, 1),
                   dimensions_.getUpperLeft() + vec2(-5, dimensions_.getHeight() / 2),
                   ColorA::black());
+
+  // Draw the axis labels
   vec2 x_label_pos = dimensions_.getCenter() + vec2(0, height / 2 + 40);
   vec2 y_label_pos = dimensions_.getCenter() - vec2(width / 2 + 40, 0);
-
   drawStringCentered("Speed", x_label_pos, ColorA::black());
-  pushModelMatrix();
-  translate(y_label_pos);
-  rotate(-1.5708);
-  drawStringCentered("Frequency", vec2(0, 0), ColorA::black());
-  popModelMatrix();
+  DrawRotatedString("Frequency", y_label_pos, -1.5708, ColorA::black(), true);
 }
 void Histogram::DrawData() {
+  // Gray color
+  color(ColorA::hex(0x808080));
   double width = dimensions_.getWidth();
   double height = dimensions_.getHeight();
-  color(ColorA::hex(0x808080));
+  // Create a map to store the bin index, and the count of data points that falls within that bins range
   std::map<size_t, size_t> bins_to_counts_;
   for (double d : data_) {
+    // Any data greater than the histograms range goes into the last bin
     size_t bin = glm::clamp((size_t) (d / bin_width_), 0ul, number_of_bins_ - 1);
     bins_to_counts_[bin] = (bins_to_counts_.count(bin) != 0) ? bins_to_counts_[bin] + 1 : 1;
   }
+
+  // Draw the bins
   for (size_t bin = 0; bin < number_of_bins_; bin++) {
     size_t frequency = (bins_to_counts_.count(bin) != 0) ? bins_to_counts_[bin] : 0;
     vec2 start_pos = vec2(dimensions_.getLowerLeft().x + bin * width / number_of_bins_, dimensions_.getLowerLeft().y);
@@ -89,9 +92,26 @@ void Histogram::Draw() {
   DrawData();
   DrawAxis();
 }
+
 std::string Histogram::DoubleToString(double num, size_t precision) {
   std::stringstream stream;
   stream << std::fixed << std::setprecision(precision) << num;
   return stream.str();
+}
+
+void Histogram::DrawRotatedString(std::string const &str,
+                                  vec2 const &pos,
+                                  float radians,
+                                  cinder::ColorA color,
+                                  bool centered) {
+  pushModelMatrix();
+  translate(pos);
+  rotate(radians);
+  if (centered) {
+    drawStringCentered(str, vec2(0, 0), color);
+  } else {
+    drawString(str, vec2(0, 0), color);
+  }
+  popModelMatrix();
 }
 }
